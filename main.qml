@@ -12,28 +12,26 @@ Window {
         id: ma
         anchors.fill: parent
         hoverEnabled: true
-        onPositionChanged: canvas.requestPaint()
+        onWheel: {
+            lightness += wheel.angleDelta.y / 120;
+        }
+        property real lightness: 50
+        property real hue: Math.round(360*mouseX/width)
+        property real sat: Math.round(100*mouseY/height)
     }
 
-    Canvas {
+    Rectangle {
         id: canvas
         width: 200
         height: 100
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-//        color: "red"
-
-        onPaint: {
-            var ctx = getContext("2d");
-            ctx.fillStyle = "hsl("+Math.round(360*ma.mouseX/ma.width)+"," + Math.round(100*ma.mouseY/ma.height) +"%, 30%)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        color: Qt.hsla(ma.hue / 360, ma.sat / 255, ma.lightness / 255, 1)
 
         Text {
             color: "black"
             anchors.centerIn: parent
-            text: Math.round(360*ma.mouseX/ma.width) +
-                  ' ' + Math.round(100*ma.mouseY/ma.height)
+            text: ma.hue + ' ' + ma.sat + ' ' + ma.lightness
             font.pointSize: 12
         }
     }
